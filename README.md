@@ -1,6 +1,7 @@
 # admin
 
-## Spring
+## dependencies
+### Spring
 Lombok 
 Spring web
 
@@ -14,5 +15,6 @@ PostgreSQL Driver
 
 Spring Rest Docs
 
-## React
-React Route mui
+### React
+React Route 
+mui
