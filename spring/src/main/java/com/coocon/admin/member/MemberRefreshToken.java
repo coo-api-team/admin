@@ -23,11 +23,16 @@ public class MemberRefreshToken {
     private Long seq;
 
 
-    @Column(name = "USER_ID", length = 64, unique = true)
+    @Column(name = "ID", length = 64, unique = true)
     @NotNull
-    private String userId;
+    private String memberId;
 
     @Column(name = "REFRESH_TOKEN", length = 256)
     @NotNull
     private String refreshToken;
+
+    public MemberRefreshToken(String memberId, String refreshToken){
+        this.memberId = memberId;
+        this.refreshToken = refreshToken;
+    }
 }

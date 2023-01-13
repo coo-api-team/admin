@@ -1,5 +1,6 @@
 package com.coocon.admin.member;
 
+import com.coocon.admin.oauth.entity.Provider;
 import com.coocon.admin.oauth.entity.Role;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sun.istack.NotNull;
@@ -35,16 +36,23 @@ public class Member {
 
     private String password;
 
-
-    @Column(nullable = false)
+    @Column
     @Enumerated(value = EnumType.STRING)
     private Role role;
 
+    @Column
+    @Enumerated(value = EnumType.STRING)
+    private Provider provider;
+
+
     @Builder
-    Member(String id, String password, String name, Role authority ){
+    Member(String id, String password,String email,  String name, Role role
+            ,Provider provider ){
         this.id = id;
         this.password = password;
         this.name = name;
-        this.role = authority;
+        this.role = role;
+        this.email = email;
+        this.provider = provider;
     }
 }

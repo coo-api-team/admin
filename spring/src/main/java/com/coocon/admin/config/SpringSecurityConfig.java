@@ -1,14 +1,30 @@
 package com.coocon.admin.config;
 
+import com.coocon.admin.oauth.CooconOAuth2UserService;
+import com.coocon.admin.oauth.info.CooconUserDetailsService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.oauth2.client.registration.ClientRegistration;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
+import org.springframework.security.oauth2.client.registration.InMemoryClientRegistrationRepository;
+import org.springframework.security.oauth2.core.AuthorizationGrantType;
+import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
+import org.springframework.security.oauth2.core.oidc.IdTokenClaimNames;
 import org.springframework.security.web.SecurityFilterChain;
 
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SpringSecurityConfig {
+
+    private final CooconUserDetailsService cooconUserDetailsService;
+    
     private static final String[] AUTH_WHITELIST ={
             "/static/*"
     };
@@ -27,15 +43,11 @@ public class SpringSecurityConfig {
                 .headers()
                 .frameOptions()
                 .sameOrigin();
+
         http.sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
-                //.and()
-                //.oauth2Login()
-                //.authorizationEndpoint()
-                //.authorizationRequestResolver()
-
-                .and()
+        http
                 .authorizeRequests()
                 .antMatchers("/","/signUp","/access-denied","/exception/**","/auth/*").permitAll()
                 .antMatchers( "/error",
@@ -51,13 +63,15 @@ public class SpringSecurityConfig {
                 .antMatchers("/admin").hasRole("ADMIN")
                 .anyRequest().authenticated(); //permit한 리소스 제외 접근 시 인증 필요
 
-        http.oauth2Login()
-                .userInfoEndpoint().userService(customOAuth2UserService)
+        http.oauth2Login();
+
+                /*
+                .userInfoEndpoint().userService(cooconUserDetailsService)
                 .and()
                 .successHandler(configSuccessHandler())
                 .failureHandler(configFailureHandler())
                 .permitAll();
-
+*/
         //.and()
 
         //.and()
@@ -70,11 +84,26 @@ public class SpringSecurityConfig {
         return http.build();
     }
 
-    private CustomAuthenticationSuccessHandler configSuccessHandler() {
-        /* ... */
+    @Bean
+    public ClientRegistrationRepository clientRegistrationRepository(){
+        return new InMemoryClientRegistrationRepository(this.googleClientRegistration());
     }
 
-    private CustomAuthenticationFailureHandler configFailureHandler() {
-        /* ... */
+    private ClientRegistration googleClientRegistration() {
+        return ClientRegistration.withRegistrationId("google")
+                .clientId("google-client-id")
+                .clientSecret("google-client-secret")
+                .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
+                .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
+                .redirectUri("{baseUrl}/login/oauth2/code/{registrationId}")
+                .scope("openid", "profile", "email", "address", "phone")
+                .authorizationUri("https://accounts.google.com/o/oauth2/v2/auth")
+                .tokenUri("https://www.googleapis.com/oauth2/v4/token")
+                .userInfoUri("https://www.googleapis.com/oauth2/v3/userinfo")
+                .userNameAttributeName(IdTokenClaimNames.SUB)
+                .jwkSetUri("https://www.googleapis.com/oauth2/v3/certs")
+                .clientName("Google")
+                .build();
     }
+
 }
