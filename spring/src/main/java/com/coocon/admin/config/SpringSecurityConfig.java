@@ -1,14 +1,11 @@
 package com.coocon.admin.config;
 
 import com.coocon.admin.oauth.CooconOAuth2UserService;
-import com.coocon.admin.oauth.info.CooconUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
@@ -23,7 +20,7 @@ import org.springframework.security.web.SecurityFilterChain;
 @RequiredArgsConstructor
 public class SpringSecurityConfig {
 
-    private final CooconUserDetailsService cooconUserDetailsService;
+    private final CooconOAuth2UserService cooconOAuth2UserService;
     
     private static final String[] AUTH_WHITELIST ={
             "/static/*"
@@ -49,21 +46,15 @@ public class SpringSecurityConfig {
 
         http
                 .authorizeRequests()
-                .antMatchers("/","/signUp","/access-denied","/exception/**","/auth/*").permitAll()
-                .antMatchers( "/error",
-                        "/favicon.ico",
-                        "/**/*.png",
-                        "/**/*.gif",
-                        "/**/*.svg",
-                        "/**/*.jpg",
-                        "/**/*.html",
-                        "/**/*.css",
-                        "/**/*.js").permitAll() //정적리소스에 대한 접속 허용
+                .antMatchers("/","/signUp","/access-denied","/exception/**").permitAll()
+                .antMatchers("/oauth2/*").permitAll()
+                .antMatchers( "/error").permitAll() //정적리소스에 대한 접속 허용
                 .antMatchers("/dashboard").hasRole("USER")
                 .antMatchers("/admin").hasRole("ADMIN")
                 .anyRequest().authenticated(); //permit한 리소스 제외 접근 시 인증 필요
 
-        http.oauth2Login();
+        http.oauth2Login()
+                .userInfoEndpoint().userService(cooconOAuth2UserService);
 
                 /*
                 .userInfoEndpoint().userService(cooconUserDetailsService)

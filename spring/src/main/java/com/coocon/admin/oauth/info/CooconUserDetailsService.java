@@ -17,7 +17,7 @@ public class CooconUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Member member = memberRepository.findByMemberId(username);
+        Member member = memberRepository.findById(username).get();
         if(member == null){
             throw new UsernameNotFoundException("Can not find id");
         }

@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class JwtConfig {
     //TODO get from properties
-    private String secret = "testsecret";
+    private String secret = "12345678901234567890123456789012";
 
     @Bean
     public AuthTokenProvider jwtProvider(){

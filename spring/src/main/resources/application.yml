@@ -1,3 +1,5 @@
+server:
+  port: 8180
 spring:
   datasource:
     url: jdbc:postgresql://localhost:54311/aoalocaldb
