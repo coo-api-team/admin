@@ -15,6 +15,7 @@ spring:
         format_sql: true
         show_sql: true
   security:
+    debug: true
     oauth2:
       client:
         registration:
@@ -27,10 +28,15 @@ spring:
 
         provider:
           coocon:
-            authorization-uri: https://localhost:8080/oauth/authorize
-            token-uri: https://localhost:8080/oauth/token
-            user-info-uri: https://localhost:8080/v2/user/me
+            authorization-uri: http://localhost:8180/oauth/authorize
+            token-uri: http://localhost:8180/oauth/token
+            user-info-uri: http://localhost:8180/v2/user/me
             user-name-attribute: id
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8180/jwt/issuer
+          jwk-set-uri: https://idp.example.com/oauth2/jwks # (2)
+          public-key-location: classpath:public.pem # (3)
 logging:
   level:
     com: debug
