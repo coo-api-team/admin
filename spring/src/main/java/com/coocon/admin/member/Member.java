@@ -23,7 +23,7 @@ public class Member {
     private Long seq;
     @Column(unique = true)
     @NotNull
-    private String id;
+    private String memberId;
 
     private String name;
 
@@ -46,9 +46,9 @@ public class Member {
 
 
     @Builder
-    Member(String id, String password,String email,  String name, Role role
+    Member(String memberId, String password,String email,  String name, Role role
             ,Provider provider ){
-        this.id = id;
+        this.memberId = memberId;
         this.password = password;
         this.name = name;
         this.role = role;

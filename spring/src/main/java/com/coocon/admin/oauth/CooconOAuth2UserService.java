@@ -61,7 +61,7 @@ public class CooconOAuth2UserService extends DefaultOAuth2UserService {
     private Member createMember(OAuth2UserInfo userInfo, Provider provider ){
         LocalDateTime now = LocalDateTime.now();
         Member member = Member.builder()
-                .id(userInfo.getId())
+                .memberId(userInfo.getId())
                 .name(userInfo.getName())
                 .email(userInfo.getEmail())
                 .provider(provider)

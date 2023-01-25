@@ -1,0 +1,36 @@
+spring:
+  profiles:
+    active: local
+  datasource:
+    url: jdbc:postgresql://localhost:54311/aoalocaldb
+    username: postgres
+    password: 1q2w3e4r
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        default_schema: public
+        format_sql: true
+        show_sql: true
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: google-client-id
+            client-secret: google-client-secret
+          coocon:
+            client-id: coocon-client-id
+            client-secret: coocon-client-secret
+
+        provider:
+          coocon:
+            authorization-uri: https://localhost:8080/oauth/authorize
+            token-uri: https://localhost:8080/oauth/token
+            user-info-uri: https://localhost:8080/v2/user/me
+            user-name-attribute: id
+logging:
+  level:
+    com: debug

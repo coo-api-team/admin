@@ -10,7 +10,7 @@ public class CooconOAuth2UserInfo extends OAuth2UserInfo{
 
     @Override
     public String getId() {
-        return (String) attributes.get("id");
+        return (String) attributes.get("memberId");
     }
 
     @Override
